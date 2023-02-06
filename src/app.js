@@ -4,8 +4,10 @@ var express = require('express');
 
 var app = express();
 var server = require('http').createServer(app);
+console.log(22222)
+var io = require('socket.io').listen(server);
 
-
+console.log(3333)
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -22,7 +24,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 var allClients = [];
 var nicks = "";
 var attende = null;
-var io = require('socket.io').listen(server);
+
 
 app.use(express.static('./public'));
 
