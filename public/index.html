@@ -1,94 +1,367 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>To Do App</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css"
-    />
-  </head>
 
-  <body>
+<head>
+	<title>GO BANG</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
 
-    <!-- REMOVE MESSAGE BEGIN -->
 
-    <div class="container-lg mb-6">
-      <div style="background-color: rgb(4 0 255 / 6%); padding: 15px; border-radius: 10px; margin-top: 10px;">
-        <div class="row">
-          <div class="col col-12 col-md-2 text-center d-inline">
-            <img src="https://adaptable.io/img/party-popper.svg" style="max-width: 150px;" />
-          </div>
-          <div class="col col-12 col-md-8 text-center">
-            <h2 class="display-4 mt-3">Congratulations!</h2>
-            <p style="font-size: 1.5rem">
-              Your app is now running on
-            </p>
-            <img src="https://adaptable.io/img/color lockup.svg" style="max-width: 200px;" />
-          </div>
-          <div class="col col-md-2 text-center d-none d-md-block">
-            <img src="https://adaptable.io/img/party-popper.svg" style="max-width: 150px;" />
-          </div>
-        </div>
 
-        <h2 class="display-5 text-center mt-5">What's Next?</h2>
 
-        <p class="text-center width-limited-text mb-4">
-          Get started by checking out your new app.
-          Add tasks to your To Do List <a href="#todo">below</a>.
-          They're saved to your new MongoDB instance via your REST API based on <a href="https://expressjs.com" target="_blank">Express</a> and <a href="https://prisma.io" target="_blank">Prisma</a>.
-          Then, try out some of the suggestions in the pre-populated To Do items.
-        </p>
+	<style type="text/css">
+		#Button1 {
+			width: 101px;
+		}
+	</style>
 
-        <div class="row mt-4">
-          <p class="text-center">
-            See the <a href="https://adaptable.io/docs/starters/express-prisma-mongo-starter#what-s-next" target="_blank">Express + Prisma + MongoDB Starter Guide</a> for step-by-step
-            instructions for each.
-          </p>
-          <p class="text-center">
-            <a target="_blank" href="https://adaptable.io/docs/starters/express-prisma-mongo-starter#what-s-next" style="background: #363795; padding: 13px 30px; border-radius: 30px; color: #fff; font-size:18px; text-decoration: none;">Go to the Starter Guide</a>
-          </p>
-        </div>
-      </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</head>
 
-    <!-- REMOVE MESSAGE END -->
+<body>
+	<p><span id="client_count">0</span> connected clients</p>
+	<p id="mionumero">0</p>
+	<p id="avvers">avv</p>
 
-    <h1 class="text-center" id="todo">Express + Prisma + MongoDB</h1>
-    <h2 class="text-center">To Do List</h2>
+	<canvas id="myCanvas" width="400px" height="400px">
 
-    <section style="background-color:rgb(4 0 255 / 6%);">
-      <div class="container-lg p-5">
-        <div class="row d-flex justify-content-center align-items-center">
-          <div class="col col-xl-10">
 
-            <div class="card">
-              <div class="card-body p-5">
+	</canvas>
+	<canvas id="simbolo" width="20px" height="20px">
 
-                <form class="d-flex justify-content-center align-items-center mb-4" id="todo-form">
-                  <div class="form-outline flex-fill">
-                    <input type="text" id="add-input" class="form-control" />
-                    <label class="form-label" for="add-input">New task...</label>
-                  </div>
-                  <button type="submit" class="btn btn-info ms-2">Add</button>
-                </form>
 
-                <ul class="list-group mb-0" id="todo-list" />
+	</canvas>
 
-              </div>
-            </div>
+	<div>tocca a: <canvas id="smbavv" width="20px" height="20px">
 
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js" ></script>
-    <script type="text/javascript" src="../js/client.js" ></script>
+		</canvas>
 
-  </body>
+	</div>
+
+	<div>Io sono: <canvas id="simbolo" width="20px" height="20px">
+
+
+		</canvas>
+
+	</div>
+	<script>
+		//	var c=document.getElementById("myCanvas")//.getContext("2d");
+		//	var ctx=c.getContext("2d");
+		var cv = document.getElementById('myCanvas');
+		var cvs = document.getElementById('simbolo');
+		var cva = document.getElementById('smbavv');
+		var socket;
+		var ctx = cv.getContext('2d');
+		var ctxa = cva.getContext('2d');
+		var context = cvs.getContext('2d');
+		var w, h;
+		var myNumber = 0;
+		var avversario = "";
+		var turno = -1;
+		var stato = [];
+		var mynick = "";
+
+		var posX, posY;
+		var posx = 100;
+		var posy = 100;
+
+		ws = document.getElementById("simbolo").width;
+		hs = document.getElementById("simbolo").height;
+
+
+		init();
+
+
+
+		function init() {
+
+			stato = [];
+			for (var i = 0; i < 19; i++)
+				for (var j = 0; j < 19; j++)
+					stato.push(0);
+
+			$(document).attr('title', mynick);
+
+		}
+
+
+		function msgReceived(msg) {
+			$clientCounter.html(msg.clients);
+
+		}
+
+		function drwReceived(msg) {
+			w = document.getElementById("myCanvas").width;
+			h = document.getElementById("myCanvas").height;
+
+
+			var casellax = Math.floor(19 * msg.x / w);
+			var casellay = Math.floor(19 * msg.y / h);
+
+			stato[19 * casellay + casellax] = turno;
+			//	  disegnapunto(msg.x,msg.y,msg.n);
+
+			disegna();
+			if (checkwin(turno, casellay, casellax)) { if (turno == myNumber) alert("Ho vinto!!!"); else alert("Ha vinto " + avversario); }
+			turno = 3 - turno;
+
+
+		}
+
+
+		$(document).ready(function () {
+			w = document.getElementById("myCanvas").width;
+			h = document.getElementById("myCanvas").height;
+
+			setInterval(function () {
+				//   update();
+				disegna();
+				disegna_simbolo(context, myNumber)
+				disegna_simbolo(ctxa, turno)
+			}, 40);
+
+
+
+
+		});
+		function disegna() {
+
+
+
+
+			ctx.fillStyle = "#00FA9A";
+			ctx.clearRect(0, 0, w, h);
+
+			ctx.strokeStyle = "black";
+			ctx.lineWidth = 1;
+			for (var i = 0; i < 18; i++) {
+
+				ctx.beginPath();
+				ctx.moveTo(0, i * (h / 19) + h / 19);
+				ctx.lineTo(w, i * (h / 19) + h / 19);
+				ctx.stroke();
+
+				ctx.beginPath();
+				ctx.moveTo(i * (w / 19) + w / 19, 0);
+				ctx.lineTo(i * (w / 19) + w / 19, h);
+				ctx.stroke();
+			}
+
+			ctx.lineCap = "round";
+			for (var j = 0; j < 19; j++) for (var i = 0; i < 19; i++) {
+
+				if (stato[19 * j + i] == 1) //draw a circle
+				{
+					ctx.strokeStyle = "blue";
+					ctx.lineWidth = 4;
+					ctx.beginPath();
+					ctx.arc(i * w / 19 + w / 38, j * w / 19 + h / 38, w / 54, 0, Math.PI * 2, true);
+					ctx.closePath();
+					ctx.stroke();
+				}
+				if (stato[19 * j + i] == 2) //draw a cross
+				{
+					ctx.strokeStyle = "red";
+					ctx.lineWidth = 4;
+					ctx.beginPath();
+					ctx.moveTo(i * w / 19 + 4, j * h / 19 + 4);
+					ctx.lineTo(i * w / 19 + w / 19 - 4, j * h / 19 + h / 19 - 4);
+					ctx.stroke();
+					ctx.closePath();
+					ctx.beginPath();
+					ctx.moveTo(i * w / 19 + w / 19 - 4, j * h / 19 + 4);
+					ctx.lineTo(i * w / 19 + 4, j * h / 19 + h / 19 - 4);
+					ctx.stroke();
+					ctx.closePath();
+					ctx.stroke();
+				}
+			}
+
+
+
+		}
+
+		function disegna_simbolo(context, smb) {
+
+
+
+
+			context.fillStyle = "#00FA9A";
+			context.clearRect(0, 0, ws, hs);
+
+			context.strokeStyle = "black";
+			context.lineWidth = 1;
+
+
+			if (smb == 1) //draw a circle
+			{
+				context.strokeStyle = "blue";
+				context.lineWidth = 4;
+				context.beginPath();
+				context.arc(ws / 2, hs / 2, ws / 2 - 4, 0, Math.PI * 2, true);
+				context.closePath();
+				context.stroke();
+			}
+			if (smb == 2) //draw a cross
+			{
+				context.strokeStyle = "red";
+				context.lineWidth = 4;
+				context.beginPath();
+				context.moveTo(0 + 3, 0 + 3);
+				context.lineTo(ws - 3, hs - 3);
+				context.stroke();
+				context.closePath();
+				context.beginPath();
+				context.moveTo(0 + 3, hs - 3);
+				context.lineTo(ws - 3, 0 + 3);
+				context.stroke();
+				context.closePath();
+				context.stroke();
+
+			}
+
+		}
+
+		function connetti() {
+
+			var strnick = new String($("#txtnick").val());
+			var regexp = /[a-zA-Z0-9]+/gi;
+
+
+
+			$clientCounter = $("#client_count");
+
+
+			socket = io.connect();
+			socket.nickname = strnick.match(regexp);
+
+			socket.on('start', function (msg, nr) { init(); console.log("avv" + msg); turno = 1; avversario = msg; myNumber = nr; $("#avvers").html("Giochi contro " + msg.toString()); $("#mionumero").html(myNumber); alert("giochi con " + avversario); });
+			socket.on('numero', function (msg) { console.log("num"); myNumber = msg; $("#mionumero").html(myNumber); socket.emit('join', socket.nickname); $("#cmdConnetti").hide(); });
+			socket.on('message', function (msg) { msgReceived(msg) });
+			socket.on('draw', function (msg) { drwReceived(msg) });
+			socket.on('andato', function () { alert("vinto") });
+			socket.on('lista', function (msg) {
+				var utenti = msg.split("-");
+				$("#lista").empty();
+				for (var i = 0; i < utenti.length - 1; i++)
+					$("#lista").append("<li>" + utenti[i] + "</li>");
+
+
+
+			});
+			disegna();
+			mynick = socket.nickname;
+		}
+
+
+		$(document).click(function (e) {
+
+			w = document.getElementById("myCanvas").width;
+			h = document.getElementById("myCanvas").height;
+
+			var x = Math.floor((e.pageX - $("#myCanvas").offset().left));
+			var y = Math.floor((e.pageY - $("#myCanvas").offset().top));
+
+			if ((x <= w) && (x >= 0) && (y <= h) && (y >= 0) && (turno == myNumber)) {
+				var casellax = Math.floor(19 * x / w);
+				var casellay = Math.floor(19 * y / h);
+
+				if (stato[19 * casellay + casellax] == 0)
+					socket.emit("daclient", { 'x': x, 'y': y, 'n': myNumber });
+
+
+			}
+
+		});
+
+
+
+		function checkwin(gioc, riga, colonna) {
+
+			//  return 0;
+			var matrice = []
+			var cols = 19;
+
+			//init the grid matrix
+			for (var i = 0; i < cols; i++) {
+				matrice[i] = [];
+			}
+			for (var i = 0; i < 19 * 19; i++)
+				matrice[Math.floor(i / 19)][i % 19] = stato[i];
+			// riga 
+			var consec = 0;
+
+			for (i = 0; i < 19; i++) {
+				if (matrice[riga][i] == gioc) consec++; else consec = 0;
+				if (consec == 5) return true;
+			}
+
+			//colonna
+			consec = 0;
+			for (i = 0; i < 19; i++) {
+				if (matrice[i][colonna] == gioc) consec++; else consec = 0;
+				if (consec == 5) return true;
+			}
+
+
+			//diagonale 1
+			consec = 0;
+			var partx = riga;
+			var party = colonna;
+
+			var part;
+			if (partx < party) { part = partx; } else { part = party; }
+			partx -= part;
+			party -= part;
+			i = 0;
+			while ((partx + i < 19) && (party + i < 19)) {
+
+				if (matrice[partx + i][party + i] == gioc) consec++; else consec = 0;
+				if (consec == 5) return true;
+				i++
+
+			}
+
+
+			//diagonale 2
+			consec = 0;
+			partx = riga;
+			party = (18 - colonna);
+
+
+			if (partx < party) part = partx; else part = party;
+			partx -= part;
+			party = colonna + part;
+
+			i = 0;
+			while ((partx + i < 19) && (party - i >= 0)) {
+
+				if (matrice[partx + i][party - i] == gioc) consec++; else consec = 0;
+				if (consec == 5) return true;
+				i++
+
+			}
+
+
+
+			return false;
+
+
+		}
+
+
+
+	</script>
+	<input id="cmdConnetti" type="button" value="Connetti" onclick="connetti()" />
+	<input id="txtnick" type="text" value="nick" pattern="[a-zA-Z0-9]+" />
+
+	<ul id="lista">
+
+
+
+
+
+	</ul>
+</body>
+
 </html>
