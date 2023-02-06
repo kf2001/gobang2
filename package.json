@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon ./src/index",
-    "start": "node ./src/index",
+    "start": "node ./src/index"
       },
   "dependencies": {
    
